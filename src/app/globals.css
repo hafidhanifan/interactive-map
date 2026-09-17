@@ -1,51 +1,51 @@
 @import "tailwindcss";
 
 /*
-  Semua nilai warna proyek ini hidup di sini.
-  Komponen React maupun kode Leaflet tidak boleh menulis hex sendiri.
+  Every color value in this project lives here.
+  React components and Leaflet code must never write a hex value directly.
 */
 :root {
-  /* tumpukan font, diisi oleh next/font di layout.tsx */
+  /* font stack, filled in by next/font in layout.tsx */
   --font-app: var(--font-plus-jakarta), system-ui, -apple-system, sans-serif;
 
-  /* warna dasar antarmuka */
+  /* base interface colors */
   --surface: #ffffff;
   --surface-muted: #f3f5f7;
   --border: #dde2e7;
   --ink: #15181c;
   --ink-muted: #5c646e;
 
-  /* warna identitas, sementara hijau netral,
-     bisa diganti kalau klien sudah memberi warna resmi kalurahan */
+  /* brand colors, neutral green for now,
+     replace once the kalurahan provides official colors */
   --brand: #1d6b4e;
   --brand-strong: #14503a;
   --brand-soft: #e7f1ec;
 
-  /* warna tujuh kategori data */
-  --kategori-umkm: #dd7a18;
-  --kategori-fasilitas-umum: #2360c4;
-  --kategori-rtlh: #98304c;
-  --kategori-jamban: #7446b8;
-  --kategori-perkebunan: #2d8a3d;
-  --kategori-peternakan: #8a5a2a;
-  --kategori-jalan: #4a525c;
+  /* the seven data categories */
+  --category-umkm: #dd7a18;
+  --category-public-facility: #2360c4;
+  --category-rtlh: #98304c;
+  --category-sanitation: #7446b8;
+  --category-plantation: #2d8a3d;
+  --category-livestock: #8a5a2a;
+  --category-road: #4a525c;
 
-  /* warna kondisi jalan dan jembatan */
-  --kondisi-mantap: #2d8a3d;
-  --kondisi-rusak-ringan: #d18f12;
-  --kondisi-rusak-berat: #bf392c;
+  /* road and bridge condition colors */
+  --condition-mantap: #2d8a3d;
+  --condition-rusak-ringan: #d18f12;
+  --condition-rusak-berat: #bf392c;
 
-  /* ukuran layout yang dipakai berulang */
-  --tinggi-header: 56px;
-  --radius-panel: 14px;
-  --bayangan-panel: 0 2px 12px rgba(16, 19, 23, 0.12);
+  /* repeated layout values */
+  --header-height: 56px;
+  --panel-radius: 14px;
+  --panel-shadow: 0 2px 12px rgba(16, 19, 23, 0.12);
 }
 
 /*
-  Blok @theme inline mendaftarkan variable di atas ke Tailwind,
-  supaya bisa dipakai sebagai class seperti bg-surface atau text-ink.
-  Tanpa blok ini variable tetap hidup, tapi hanya bisa dipakai
-  lewat style biasa, bukan lewat class Tailwind.
+  The @theme inline block registers the variables above with Tailwind
+  so they can be used as classes such as bg-surface or text-ink.
+  Without it the variables still exist, but only through plain style
+  attributes, not Tailwind classes.
 */
 @theme inline {
   --font-sans: var(--font-app);
@@ -60,9 +60,9 @@
 }
 
 /*
-  Peta nanti mengisi seluruh tinggi layar.
-  Leaflet menghitung tinggi kontainernya dari elemen induk,
-  jadi rantai tinggi 100% ini harus disiapkan sejak sekarang.
+  The map will fill the full screen height later.
+  Leaflet measures its container against the parent element,
+  so this 100% height chain has to be in place from the start.
 */
 html,
 body {
@@ -75,6 +75,6 @@ body {
   font-family: var(--font-app);
   -webkit-font-smoothing: antialiased;
 
-  /* cegah tarikan pantul di iOS saat menggeser peta */
+  /* stop the rubber band bounce on iOS while panning the map */
   overscroll-behavior: none;
 }

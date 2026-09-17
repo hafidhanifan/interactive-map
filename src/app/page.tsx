@@ -1,10 +1,14 @@
-export default function BerandaPage() {
+import { DISTRICT_NAME, VILLAGE_NAME } from "@/lib/map-config";
+
+export default function HomePage() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-xl flex-col justify-center gap-6 px-5 py-10">
       <div>
-        <p className="text-sm font-medium text-brand">Kalurahan Banjaroyo</p>
+        <p className="text-sm font-medium text-brand">
+          Kalurahan {VILLAGE_NAME}, Kapanewon {DISTRICT_NAME}
+        </p>
         <h1 className="mt-1 text-2xl font-bold tracking-tight">
-          Peta Digital Kalurahan Banjaroyo
+          Peta Digital Kalurahan {VILLAGE_NAME}
         </h1>
         <p className="mt-2 text-sm text-ink-muted">
           Kerangka proyek berhasil dibuat. Peta akan dipasang pada langkah
@@ -12,37 +16,38 @@ export default function BerandaPage() {
         </p>
       </div>
 
-      <ul className="flex flex-col gap-2 rounded-(--radius-panel) border border-border bg-surface-muted p-4 text-sm">
+      <ul className="flex flex-col gap-2 rounded-(--panel-radius) border border-border bg-surface-muted p-4 text-sm">
         <li>Next.js App Router aktif</li>
         <li>Font Plus Jakarta Sans termuat</li>
         <li>Warna dibaca dari CSS variable</li>
+        <li>Alias impor @/ berfungsi</li>
       </ul>
 
       {/*
-        Kotak warna di bawah membaca variable kategori langsung.
-        Kalau salah satu kotak tampil abu abu atau hitam,
-        berarti ada nama variable yang salah ketik di globals.css.
+        These swatches read the category variables directly.
+        If one of them renders gray or black, a variable name in
+        globals.css is misspelled.
       */}
       <div className="flex flex-wrap gap-2">
         <span
           className="h-8 w-8 rounded-full"
-          style={{ backgroundColor: "var(--kategori-umkm)" }}
+          style={{ backgroundColor: "var(--category-umkm)" }}
         />
         <span
           className="h-8 w-8 rounded-full"
-          style={{ backgroundColor: "var(--kategori-fasilitas-umum)" }}
+          style={{ backgroundColor: "var(--category-public-facility)" }}
         />
         <span
           className="h-8 w-8 rounded-full"
-          style={{ backgroundColor: "var(--kategori-perkebunan)" }}
+          style={{ backgroundColor: "var(--category-plantation)" }}
         />
         <span
           className="h-8 w-8 rounded-full"
-          style={{ backgroundColor: "var(--kategori-peternakan)" }}
+          style={{ backgroundColor: "var(--category-livestock)" }}
         />
         <span
           className="h-8 w-8 rounded-full"
-          style={{ backgroundColor: "var(--kondisi-rusak-berat)" }}
+          style={{ backgroundColor: "var(--condition-rusak-berat)" }}
         />
       </div>
     </main>
