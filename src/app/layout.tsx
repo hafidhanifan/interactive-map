@@ -10,8 +10,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Peta Interaktif Desa Banjaroyo",
-  description: "Peta interaktif dengan berbagai titik pada desa Banjaroyo",
+  title: "Peta Digital Kalurahan Banjaroyo",
+  description:
+    "Peta digital potensi dan infrastruktur Kalurahan Banjaroyo, Kapanewon Kalibawang, Kabupaten Kulon Progo.",
 };
 
 export const viewport: Viewport = {
@@ -24,7 +25,9 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="id" className={plusJakartaSans.variable}>
-      <body className="min-h-dvh bg-surface text-ink">{children}</body>
+      <body className="h-dvh overflow-hidden bg-surface text-ink">
+        {children}
+      </body>
     </html>
   );
 }
