@@ -1,6 +1,6 @@
 import { BottomPanel } from "@/components/layout/BottomPanel";
-import { MapPlaceholder } from "@/components/layout/MapPlaceholder";
 import { MapShell } from "@/components/layout/MapShell";
+import { MapLoader } from "@/components/map/MapLoader";
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
         </BottomPanel>
       }
     >
-      <MapPlaceholder />
+      <MapLoader />
     </MapShell>
   );
 }

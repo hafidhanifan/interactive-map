@@ -12,3 +12,11 @@ export const MAX_ZOOM = 19;
 export const VILLAGE_NAME = "Banjaroyo";
 export const DISTRICT_NAME = "Kalibawang";
 export const REGENCY_NAME = "Kulon Progo";
+
+// street basemap from OpenStreetMap
+export const STREET_TILE = {
+  url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  attribution:
+    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 19,
+} as const;
