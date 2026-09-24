@@ -37,7 +37,7 @@ export function BaseMap() {
         z-[500] clears Leaflet's own layers, which top out around 400 for
         overlays, while staying below marker popups at 700.
       */}
-      <div className="absolute right-3 top-3 z-[500]">
+      <div className="absolute right-3 top-3 z-500">
         <BasemapSwitcher value={basemap} onChange={setBasemap} />
       </div>
     </div>
