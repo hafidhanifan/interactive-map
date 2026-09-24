@@ -1,5 +1,7 @@
 // map center on first load
-export const DEFAULT_CENTER: readonly [number, number] = [-7.7167, 110.2];
+export const DEFAULT_CENTER: readonly [number, number] = [
+  -7.6596534, 110.2155825,
+];
 
 // initial zoom level. higher means closer
 export const DEFAULT_ZOOM = 13;
