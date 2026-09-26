@@ -10,7 +10,7 @@ export type UmkmCategory =
   | "konter"
   | "lainnya";
 
-export const UMKM_CATEOGRY_LABELS: Record<UmkmCategory, string> = {
+export const UMKM_CATEGORY_LABELS: Record<UmkmCategory, string> = {
   "toko-kelontong": "Toko Kelontong",
   kuliner: "Kuliner",
   "rumah-produksi": "Rumah Produksi",

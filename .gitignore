@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Export mentah dari Kobo: berisi nomor telepon dan nama pemilik,
+# termasuk milik responden yang menolak dipublikasikan.
+/data/raw
