@@ -1,13 +1,3 @@
-/*
-  Converts the Kobo xlsx export into a published GeoJSON file.
-
-  Run it with:  npm run convert:umkm
-  Input:        data/raw/umkm.xlsx   (gitignored, contains personal data)
-  Output:       public/data/umkm.geojson
-
-  The output is rewritten from scratch on every run, so deletions and
-  corrections made in Kobo reach the map instead of lingering forever.
-*/
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import ExcelJS from "exceljs";
