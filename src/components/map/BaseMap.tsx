@@ -20,9 +20,25 @@ import { ClusterToggle } from "./ClusterToggle";
 import { DataStatusBadge } from "./DataStatusBadge";
 import { UmkmClusterLayer } from "./UmkmClusterLayer";
 
+/**
+ * The Leaflet map itself.
+ *
+ * This component must never be rendered on the server: Leaflet touches
+ * window and document as soon as it is imported. MapLoader is responsible
+ * for keeping it browser only.
+ */
 export function BaseMap() {
   const [basemap, setBasemap] = useState<BasemapId>(DEFAULT_BASEMAP);
-  const [clustered, setClustered] = useState(true);
+
+  /*
+    Clustering starts off. On a mid range phone, canvas rendering handled
+    thousands of points more smoothly than markercluster did, because the
+    plugin regroups every point on each zoom change and rebuilds its
+    bubbles as DOM nodes. The toggle stays for now so the call can be
+    remade against real survey data instead of synthetic copies.
+  */
+  const [clustered, setClustered] = useState(false);
+
   const umkm = useUmkmData();
 
   return (
@@ -35,7 +51,7 @@ export function BaseMap() {
         scrollWheelZoom
         zoomControl={false}
         // Draws shapes onto a single canvas instead of one SVG element
-        // per marker, which is far cheaper once the count grows.
+        // per marker, and skips anything outside the viewport entirely.
         preferCanvas
         className="h-full w-full"
       >
@@ -51,7 +67,7 @@ export function BaseMap() {
         z-[500] clears Leaflet's own layers, which top out around 400 for
         overlays, while staying below marker popups at 700.
       */}
-      <div className="absolute right-3 top-3 z-500 flex flex-col items-end gap-2">
+      <div className="absolute right-3 top-3 z-[500] flex flex-col items-end gap-2">
         <BasemapSwitcher value={basemap} onChange={setBasemap} />
         <ClusterToggle value={clustered} onChange={setClustered} />
         <DataStatusBadge

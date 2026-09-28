@@ -101,7 +101,6 @@ body {
   font-weight: 700;
   line-height: 1;
   text-align: center;
-  box-shadow: var(--panel-shadow);
 }
 
 /* Widths here must match CLUSTER_SIZES in UmkmClusterLayer.tsx */
