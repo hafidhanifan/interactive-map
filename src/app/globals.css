@@ -81,11 +81,15 @@ body {
 
 /*
   Cluster bubbles.
-  The plugin ships its own stylesheet with hard coded colours, which we
-  skip entirely: only MarkerCluster.css is imported, for positioning and
-  animation, and the appearance is defined here against our variables.
+
+  The selector is doubled up with .leaflet-marker-icon so it outranks the
+  plugin's own rules, which would otherwise keep the icon from behaving
+  as a flex container. box-sizing matters too: with the default setting
+  the 2px border would sit outside the declared width, and the bubble
+  would no longer match the size handed to Leaflet.
 */
-.umkm-cluster {
+.leaflet-marker-icon.umkm-cluster {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,22 +99,25 @@ body {
   color: var(--surface);
   font-family: var(--font-app);
   font-weight: 700;
+  line-height: 1;
+  text-align: center;
   box-shadow: var(--panel-shadow);
 }
 
-.umkm-cluster-small {
+/* Widths here must match CLUSTER_SIZES in UmkmClusterLayer.tsx */
+.leaflet-marker-icon.umkm-cluster-small {
   width: 34px;
   height: 34px;
   font-size: 12px;
 }
 
-.umkm-cluster-medium {
+.leaflet-marker-icon.umkm-cluster-medium {
   width: 42px;
   height: 42px;
   font-size: 13px;
 }
 
-.umkm-cluster-large {
+.leaflet-marker-icon.umkm-cluster-large {
   width: 52px;
   height: 52px;
   font-size: 14px;

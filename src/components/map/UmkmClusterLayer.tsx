@@ -18,26 +18,43 @@ type UmkmClusterLayerProps = {
 
 const MARKER_RADIUS = 6;
 
-/** thresholds used to size the cluster bubble. */
-const MEDIUM_CLUSTER = 25;
-const LARGE_CLUSTER = 100;
+/**
+ * Cluster bubble sizes.
+ *
+ * The pixel values here must match the widths in globals.css exactly:
+ * Leaflet offsets an icon by half of the size it is told, so a mismatch
+ * pushes the bubble off the point it represents.
+ */
+const CLUSTER_SIZES = [
+  { minCount: 100, name: "large", pixels: 52 },
+  { minCount: 25, name: "medium", pixels: 42 },
+  { minCount: 0, name: "small", pixels: 34 },
+] as const;
 
 function createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
   const count = cluster.getChildCount();
   const size =
-    count >= LARGE_CLUSTER
-      ? "large"
-      : count >= MEDIUM_CLUSTER
-        ? "medium"
-        : "small";
+    CLUSTER_SIZES.find((option) => count >= option.minCount) ??
+    CLUSTER_SIZES[CLUSTER_SIZES.length - 1];
+
+  if (!size) {
+    throw new Error("Ukuran cluster tidak ditemukan.");
+  }
 
   return L.divIcon({
     html: `<span>${count}</span>`,
-    className: `umkm-cluster umkm-cluster-${size}`,
-    iconSize: L.point(40, 40),
+    className: `umkm-cluster umkm-cluster-${size.name}`,
+    iconSize: L.point(size.pixels, size.pixels),
   });
 }
 
+/**
+ * Draws the UMKM points, optionally grouped into clusters.
+ *
+ * markercluster is a plain Leaflet plugin with no React wrapper, so the
+ * layer is created and torn down by hand inside an effect rather than
+ * rendered as JSX.
+ */
 export function UmkmClusterLayer({
   features,
   clustered,
@@ -59,7 +76,8 @@ export function UmkmClusterLayer({
         },
       );
 
-      // popup content is built only when the marker is actually opened, so thousands of unopened popups cost nothing.
+      // Popup content is built only when the marker is actually opened,
+      // so thousands of unopened popups cost nothing.
       marker.bindPopup(() => buildUmkmPopup(feature.properties));
       return marker;
     });
@@ -67,9 +85,15 @@ export function UmkmClusterLayer({
     const group = clustered
       ? L.markerClusterGroup({
           iconCreateFunction: createClusterIcon,
-          // adds markers in batches so the browser stays responsive while a large dataset is being placed.
+          // Animation is off on purpose. Markers are painted onto a single
+          // canvas, and animating a cluster apart repaints that whole
+          // canvas on every frame, which stutters even on small datasets.
+          animate: false,
+          animateAddingMarkers: false,
+          // Adds markers in batches so the browser stays responsive
+          // while a large dataset is being placed.
           chunkedLoading: true,
-          // stop clustering once the user is close enough to see detail.
+          // Stop clustering once the user is close enough to see detail.
           disableClusteringAtZoom: 18,
           spiderfyOnMaxZoom: true,
           showCoverageOnHover: false,
@@ -83,7 +107,8 @@ export function UmkmClusterLayer({
 
     map.addLayer(group);
 
-    // removing the layer here is what stops duplicates from piling up every time the data or the toggle changes.
+    // Removing the layer here is what stops duplicates from piling up
+    // every time the data or the toggle changes.
     return () => {
       map.removeLayer(group);
       group.clearLayers();
