@@ -26,7 +26,7 @@ export function UmkmDetailPanel({ feature, onClose }: UmkmDetailPanelProps) {
 
   return (
     <section
-      className="mx-3 mb-3 max-h-[60dvh] overflow-y-auto rounded-[var(--panel-radius)] border border-border bg-surface p-4"
+      className="mx-3 mb-3 max-h-[60dvh] overflow-y-auto rounded-(--panel-radius) border border-border bg-surface p-4"
       style={{ boxShadow: "var(--panel-shadow)" }}
       aria-label="Detail usaha"
     >

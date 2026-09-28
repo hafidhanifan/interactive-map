@@ -27,6 +27,7 @@ export function PhotoStrip({ photos, alt }: PhotoStripProps) {
   return (
     <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
       {usable.map((photo, index) => (
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           key={photo}
           src={photo}
@@ -34,7 +35,7 @@ export function PhotoStrip({ photos, alt }: PhotoStripProps) {
           loading="lazy"
           decoding="async"
           onError={() => setBroken((current) => [...current, photo])}
-          className="h-40 w-auto shrink-0 rounded-[var(--panel-radius)] border border-border object-contain"
+          className="h-40 w-auto shrink-0 rounded-(--panel-radius) border border-border object-contain"
           style={{ backgroundColor: "var(--surface-muted)" }}
         />
       ))}
