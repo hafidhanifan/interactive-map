@@ -60,9 +60,9 @@
 }
 
 /*
-  The map will fill the full screen height later.
+  The map fills the full screen height.
   Leaflet measures its container against the parent element,
-  so this 100% height chain has to be in place from the start.
+  so this 100% height chain has to stay unbroken.
 */
 html,
 body {
@@ -77,4 +77,64 @@ body {
 
   /* stop the rubber band bounce on iOS while panning the map */
   overscroll-behavior: none;
+}
+
+/*
+  Cluster bubbles.
+  The plugin ships its own stylesheet with hard coded colours, which we
+  skip entirely: only MarkerCluster.css is imported, for positioning and
+  animation, and the appearance is defined here against our variables.
+*/
+.umkm-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 2px solid var(--surface);
+  background-color: var(--category-umkm);
+  color: var(--surface);
+  font-family: var(--font-app);
+  font-weight: 700;
+  box-shadow: var(--panel-shadow);
+}
+
+.umkm-cluster-small {
+  width: 34px;
+  height: 34px;
+  font-size: 12px;
+}
+
+.umkm-cluster-medium {
+  width: 42px;
+  height: 42px;
+  font-size: 13px;
+}
+
+.umkm-cluster-large {
+  width: 52px;
+  height: 52px;
+  font-size: 14px;
+}
+
+/* Popup contents, built as an HTML string in popup-content.ts */
+.popup-body {
+  min-width: 160px;
+}
+
+.popup-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.popup-meta {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* Match Leaflet's own popup shell to the rest of the interface */
+.leaflet-popup-content-wrap {
+  border-radius: var(--panel-radius);
 }

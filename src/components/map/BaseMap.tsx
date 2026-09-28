@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
 
 import { useUmkmData } from "@/hooks/use-umkm-data";
 import {
@@ -15,11 +16,13 @@ import {
 } from "@/lib/map-config";
 import { BasemapLayer } from "./BasemapLayer";
 import { BasemapSwitcher } from "./BasemapSwitcher";
+import { ClusterToggle } from "./ClusterToggle";
 import { DataStatusBadge } from "./DataStatusBadge";
-import { UmkmMarker } from "./UmkmMarker";
+import { UmkmClusterLayer } from "./UmkmClusterLayer";
 
 export function BaseMap() {
   const [basemap, setBasemap] = useState<BasemapId>(DEFAULT_BASEMAP);
+  const [clustered, setClustered] = useState(true);
   const umkm = useUmkmData();
 
   return (
@@ -31,15 +34,16 @@ export function BaseMap() {
         maxZoom={MAX_ZOOM}
         scrollWheelZoom
         zoomControl={false}
+        // Draws shapes onto a single canvas instead of one SVG element
+        // per marker, which is far cheaper once the count grows.
+        preferCanvas
         className="h-full w-full"
       >
         <BasemapLayer basemap={basemap} />
 
-        {umkm.status === "ready"
-          ? umkm.features.map((feature) => (
-              <UmkmMarker key={feature.id} feature={feature} />
-            ))
-          : null}
+        {umkm.status === "ready" ? (
+          <UmkmClusterLayer features={umkm.features} clustered={clustered} />
+        ) : null}
       </MapContainer>
 
       {/*
@@ -49,6 +53,7 @@ export function BaseMap() {
       */}
       <div className="absolute right-3 top-3 z-500 flex flex-col items-end gap-2">
         <BasemapSwitcher value={basemap} onChange={setBasemap} />
+        <ClusterToggle value={clustered} onChange={setClustered} />
         <DataStatusBadge
           status={umkm.status}
           count={umkm.status === "ready" ? umkm.features.length : 0}
