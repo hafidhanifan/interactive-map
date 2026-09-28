@@ -9,7 +9,7 @@ import {
 } from "../src/lib/umkm-mapping.js";
 import { UMKM_CATEGORY_LABELS } from "../src/types/umkm.js";
 
-const SOURCE_FILE = path.resolve("data/raw/umkm.xlsx");
+const SOURCE_FILE = path.resolve("data/raw/umkm/umkm.xlsx");
 const OUTPUT_FILE = path.resolve("public/data/umkm.geojson");
 const PHOTO_BASE = "/photos/umkm";
 const PHOTO_FIELDS = ["depan", "samping", "lainnya"] as const;
