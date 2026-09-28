@@ -5,7 +5,8 @@ import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 
-import { UmkmDetailPanel } from "@/components/detail/UmkmDetailPanel";
+import { UmkmDetailSheet } from "@/components/detail/UmkmDetailSheet";
+import { UmkmDetailSidebar } from "@/components/detail/UmkmDetailSidebar";
 import { useUmkmData } from "@/hooks/use-umkm-data";
 import {
   DEFAULT_BASEMAP,
@@ -22,34 +23,14 @@ import { ClusterToggle } from "./ClusterToggle";
 import { DataStatusBadge } from "./DataStatusBadge";
 import { UmkmClusterLayer } from "./UmkmClusterLayer";
 
-/**
- * The Leaflet map itself.
- *
- * This component must never be rendered on the server: Leaflet touches
- * window and document as soon as it is imported. MapLoader is responsible
- * for keeping it browser only.
- */
 export function BaseMap() {
   const [basemap, setBasemap] = useState<BasemapId>(DEFAULT_BASEMAP);
 
-  /*
-    Clustering starts off. On a mid range phone, canvas rendering handled
-    thousands of points more smoothly than markercluster did, because the
-    plugin regroups every point on each zoom change and rebuilds its
-    bubbles as DOM nodes. The toggle stays for now so the call can be
-    remade against real survey data instead of synthetic copies.
-  */
   const [clustered, setClustered] = useState(false);
   const [selected, setSelected] = useState<UmkmFeature | null>(null);
 
   const umkm = useUmkmData();
 
-  /*
-    useCallback keeps this the same function between renders. Without it,
-    opening the panel would change the identity of onSelect, which is a
-    dependency of the marker layer's effect, and every marker would be
-    torn down and rebuilt on each click.
-  */
   const handleSelect = useCallback((feature: UmkmFeature) => {
     setSelected(feature);
   }, []);
@@ -67,8 +48,7 @@ export function BaseMap() {
         maxZoom={MAX_ZOOM}
         scrollWheelZoom
         zoomControl={false}
-        // Draws shapes onto a single canvas instead of one SVG element
-        // per marker, and skips anything outside the viewport entirely.
+        // draws shapes onto a single canvas instead of one SVG element per marker, and skips anything outside the viewport entirely.
         preferCanvas
         className="h-full w-full"
       >
@@ -83,11 +63,6 @@ export function BaseMap() {
         ) : null}
       </MapContainer>
 
-      {/*
-        Controls sit above the map in plain DOM.
-        z-[500] clears Leaflet's own layers, which top out around 400 for
-        overlays, while staying below marker popups at 700.
-      */}
       <div className="absolute right-3 top-3 z-500 flex flex-col items-end gap-2">
         <BasemapSwitcher value={basemap} onChange={setBasemap} />
         <ClusterToggle value={clustered} onChange={setClustered} />
@@ -99,11 +74,10 @@ export function BaseMap() {
       </div>
 
       {selected ? (
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-500">
-          <div className="pointer-events-auto">
-            <UmkmDetailPanel feature={selected} onClose={handleClose} />
-          </div>
-        </div>
+        <>
+          <UmkmDetailSheet feature={selected} onClose={handleClose} />
+          <UmkmDetailSidebar feature={selected} onClose={handleClose} />
+        </>
       ) : null}
     </div>
   );
