@@ -7,13 +7,13 @@ import "leaflet.markercluster";
 
 import { getCategoryColor } from "@/lib/category-style";
 import { readCssVariable } from "@/lib/css-variables";
-import { buildUmkmPopup } from "@/lib/popup-content";
 import { toLeafletPosition } from "@/types/geojson";
 import type { UmkmFeature } from "@/types/umkm";
 
 type UmkmClusterLayerProps = {
   features: readonly UmkmFeature[];
   clustered: boolean;
+  onSelect: (feature: UmkmFeature) => void;
 };
 
 const MARKER_RADIUS = 6;
@@ -49,7 +49,7 @@ function createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
 }
 
 /**
- * Draws the UMKM points, optionally grouped into clusters.
+ * Draws the UMKM points and reports clicks back to the map.
  *
  * markercluster is a plain Leaflet plugin with no React wrapper, so the
  * layer is created and torn down by hand inside an effect rather than
@@ -58,6 +58,7 @@ function createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
 export function UmkmClusterLayer({
   features,
   clustered,
+  onSelect,
 }: UmkmClusterLayerProps) {
   const map = useMap();
 
@@ -76,9 +77,9 @@ export function UmkmClusterLayer({
         },
       );
 
-      // Popup content is built only when the marker is actually opened,
-      // so thousands of unopened popups cost nothing.
-      marker.bindPopup(() => buildUmkmPopup(feature.properties));
+      // No bound popup any more: the click opens the React panel instead,
+      // which can show photos and does not shift the map to fit itself.
+      marker.on("click", () => onSelect(feature));
       return marker;
     });
 
@@ -90,10 +91,7 @@ export function UmkmClusterLayer({
           // canvas on every frame, which stutters even on small datasets.
           animate: false,
           animateAddingMarkers: false,
-          // Adds markers in batches so the browser stays responsive
-          // while a large dataset is being placed.
           chunkedLoading: true,
-          // Stop clustering once the user is close enough to see detail.
           disableClusteringAtZoom: 18,
           spiderfyOnMaxZoom: true,
           showCoverageOnHover: false,
@@ -113,7 +111,7 @@ export function UmkmClusterLayer({
       map.removeLayer(group);
       group.clearLayers();
     };
-  }, [map, features, clustered]);
+  }, [map, features, clustered, onSelect]);
 
   return null;
 }

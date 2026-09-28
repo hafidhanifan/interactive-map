@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 
+import { UmkmDetailPanel } from "@/components/detail/UmkmDetailPanel";
 import { useUmkmData } from "@/hooks/use-umkm-data";
 import {
   DEFAULT_BASEMAP,
@@ -14,6 +15,7 @@ import {
   MIN_ZOOM,
   type BasemapId,
 } from "@/lib/map-config";
+import type { UmkmFeature } from "@/types/umkm";
 import { BasemapLayer } from "./BasemapLayer";
 import { BasemapSwitcher } from "./BasemapSwitcher";
 import { ClusterToggle } from "./ClusterToggle";
@@ -38,8 +40,23 @@ export function BaseMap() {
     remade against real survey data instead of synthetic copies.
   */
   const [clustered, setClustered] = useState(false);
+  const [selected, setSelected] = useState<UmkmFeature | null>(null);
 
   const umkm = useUmkmData();
+
+  /*
+    useCallback keeps this the same function between renders. Without it,
+    opening the panel would change the identity of onSelect, which is a
+    dependency of the marker layer's effect, and every marker would be
+    torn down and rebuilt on each click.
+  */
+  const handleSelect = useCallback((feature: UmkmFeature) => {
+    setSelected(feature);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setSelected(null);
+  }, []);
 
   return (
     <div className="relative h-full w-full">
@@ -58,7 +75,11 @@ export function BaseMap() {
         <BasemapLayer basemap={basemap} />
 
         {umkm.status === "ready" ? (
-          <UmkmClusterLayer features={umkm.features} clustered={clustered} />
+          <UmkmClusterLayer
+            features={umkm.features}
+            clustered={clustered}
+            onSelect={handleSelect}
+          />
         ) : null}
       </MapContainer>
 
@@ -67,7 +88,7 @@ export function BaseMap() {
         z-[500] clears Leaflet's own layers, which top out around 400 for
         overlays, while staying below marker popups at 700.
       */}
-      <div className="absolute right-3 top-3 z-500 flex flex-col items-end gap-2">
+      <div className="absolute right-3 top-3 z-[500] flex flex-col items-end gap-2">
         <BasemapSwitcher value={basemap} onChange={setBasemap} />
         <ClusterToggle value={clustered} onChange={setClustered} />
         <DataStatusBadge
@@ -76,6 +97,14 @@ export function BaseMap() {
           message={umkm.status === "error" ? umkm.message : undefined}
         />
       </div>
+
+      {selected ? (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[500]">
+          <div className="pointer-events-auto">
+            <UmkmDetailPanel feature={selected} onClose={handleClose} />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
