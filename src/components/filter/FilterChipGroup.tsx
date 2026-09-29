@@ -1,6 +1,6 @@
 "use client";
 
-import type { FacetOption } from "@/hooks/use-umkm-filter";
+import type { FacetOption } from "@/hooks/use-point-filter";
 
 type FilterChipGroupProps = {
   title: string;
@@ -30,8 +30,6 @@ export function FilterChipGroup({
       <div className="mt-1.5 flex flex-wrap gap-1.5">
         {options.map((option) => {
           const isActive = selected.includes(option.value);
-          const background = isActive ? "var(--brand)" : "var(--surface-muted)";
-          const text = isActive ? "var(--surface)" : "var(--ink-muted)";
 
           return (
             <button
@@ -40,7 +38,12 @@ export function FilterChipGroup({
               onClick={() => onToggle(option.value)}
               aria-pressed={isActive}
               className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium"
-              style={{ backgroundColor: background, color: text }}
+              style={{
+                backgroundColor: isActive
+                  ? "var(--brand)"
+                  : "var(--surface-muted)",
+                color: isActive ? "var(--surface)" : "var(--ink-muted)",
+              }}
             >
               {option.label} ({option.count})
             </button>

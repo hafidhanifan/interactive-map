@@ -1,14 +1,10 @@
 "use client";
 
-import type { ReactNode } from "react";
+import type { ComponentProps } from "react";
 
-import type { UmkmFilterResult } from "@/hooks/use-umkm-filter";
-import { UmkmFilterContent } from "./UmkmFilterContent";
+import { FilterContent } from "./FilterContent";
 
-type UmkmFilterSheetProps = {
-  filter: UmkmFilterResult;
-  totalCount: number;
-  controls: ReactNode;
+type FilterSheetProps = ComponentProps<typeof FilterContent> & {
   open: boolean;
   onClose: () => void;
 };
@@ -18,19 +14,18 @@ type UmkmFilterSheetProps = {
  *
  * Hidden from md upwards, where the sidebar is always visible instead.
  */
-export function UmkmFilterSheet({
-  filter,
-  totalCount,
-  controls,
+
+export function FilterSheet({
   open,
   onClose,
-}: UmkmFilterSheetProps) {
+  ...contentProps
+}: FilterSheetProps) {
   if (!open) return null;
 
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-600 md:hidden">
       <section
-        className="pointer-events-auto mx-3 mb-3 max-h-[70dvh] overflow-y-auto rounded-(--panel-radius) border border-border bg-surface p-4"
+        className="pointer-events-auto mx-3 mb-3 max-h-[75dvh] overflow-y-auto rounded-(--panel-radius) border border-border bg-surface p-4"
         style={{ boxShadow: "var(--panel-shadow)" }}
         aria-label="Filter data"
       >
@@ -45,11 +40,7 @@ export function UmkmFilterSheet({
           </button>
         </div>
 
-        <UmkmFilterContent
-          filter={filter}
-          totalCount={totalCount}
-          controls={controls}
-        />
+        <FilterContent {...contentProps} />
       </section>
     </div>
   );

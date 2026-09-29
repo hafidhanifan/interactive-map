@@ -5,26 +5,19 @@ import L from "leaflet";
 import { useMap } from "react-leaflet";
 import "leaflet.markercluster";
 
-import { getCategoryColor } from "@/lib/category-style";
 import { readCssVariable } from "@/lib/css-variables";
+import { getDatasetColor } from "@/lib/marker-style";
 import { toLeafletPosition } from "@/types/geojson";
-import type { UmkmFeature } from "@/types/umkm";
+import type { MapPoint } from "@/types/dataset";
 
-type UmkmClusterLayerProps = {
-  features: readonly UmkmFeature[];
+type PointLayerProps = {
+  features: readonly MapPoint[];
   clustered: boolean;
-  onSelect: (feature: UmkmFeature) => void;
+  onSelect: (feature: MapPoint) => void;
 };
 
 const MARKER_RADIUS = 6;
 
-/**
- * Cluster bubble sizes.
- *
- * The pixel values here must match the widths in globals.css exactly:
- * Leaflet offsets an icon by half of the size it is told, so a mismatch
- * pushes the bubble off the point it represents.
- */
 const CLUSTER_SIZES = [
   { minCount: 100, name: "large", pixels: 52 },
   { minCount: 25, name: "medium", pixels: 42 },
@@ -43,23 +36,12 @@ function createClusterIcon(cluster: L.MarkerCluster): L.DivIcon {
 
   return L.divIcon({
     html: `<span>${count}</span>`,
-    className: `umkm-cluster umkm-cluster-${size.name}`,
+    className: `map-cluster map-cluster-${size.name}`,
     iconSize: L.point(size.pixels, size.pixels),
   });
 }
 
-/**
- * Draws the UMKM points and reports clicks back to the map.
- *
- * markercluster is a plain Leaflet plugin with no React wrapper, so the
- * layer is created and torn down by hand inside an effect rather than
- * rendered as JSX.
- */
-export function UmkmClusterLayer({
-  features,
-  clustered,
-  onSelect,
-}: UmkmClusterLayerProps) {
+export function PointLayer({ features, clustered, onSelect }: PointLayerProps) {
   const map = useMap();
 
   useEffect(() => {
@@ -72,13 +54,11 @@ export function UmkmClusterLayer({
           radius: MARKER_RADIUS,
           color: borderColor,
           weight: 2,
-          fillColor: getCategoryColor(feature.properties.category),
+          fillColor: getDatasetColor(feature.properties.dataset),
           fillOpacity: 1,
         },
       );
 
-      // No bound popup any more: the click opens the React panel instead,
-      // which can show photos and does not shift the map to fit itself.
       marker.on("click", () => onSelect(feature));
       return marker;
     });

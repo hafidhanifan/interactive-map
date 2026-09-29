@@ -1,3 +1,5 @@
+import type { PointFeature } from "./geojson";
+
 // the six categories currently published. roads and brigdes will join later. */
 export type DatasetId =
   | "umkm"
@@ -25,3 +27,5 @@ export type PointProperties = {
   readonly photos: readonly string[];
   readonly gpsPrecision: number | null;
 };
+
+export type MapPoint = PointFeature<PointProperties>;

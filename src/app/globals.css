@@ -88,7 +88,7 @@ body {
   the 2px border would sit outside the declared width, and the bubble
   would no longer match the size handed to Leaflet.
 */
-.leaflet-marker-icon.umkm-cluster {
+.leaflet-marker-icon.map-cluster {
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -104,19 +104,19 @@ body {
 }
 
 /* Widths here must match CLUSTER_SIZES in UmkmClusterLayer.tsx */
-.leaflet-marker-icon.umkm-cluster-small {
+.leaflet-marker-icon.map-cluster-small {
   width: 34px;
   height: 34px;
   font-size: 12px;
 }
 
-.leaflet-marker-icon.umkm-cluster-medium {
+.leaflet-marker-icon.map-cluster-medium {
   width: 42px;
   height: 42px;
   font-size: 13px;
 }
 
-.leaflet-marker-icon.umkm-cluster-large {
+.leaflet-marker-icon.map-cluster-large {
   width: 52px;
   height: 52px;
   font-size: 14px;
