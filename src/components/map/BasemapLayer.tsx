@@ -31,6 +31,7 @@ export function BasemapLayer({ basemap }: BasemapLayerProps) {
         url={option.base.url}
         attribution={option.base.attribution}
         maxZoom={option.base.maxZoom}
+        detectRetina
       />
 
       {option.labels ? (
@@ -39,6 +40,7 @@ export function BasemapLayer({ basemap }: BasemapLayerProps) {
           url={option.labels.url}
           attribution={option.labels.attribution}
           maxZoom={option.labels.maxZoom}
+          detectRetina
         />
       ) : null}
     </>

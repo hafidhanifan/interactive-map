@@ -22,6 +22,8 @@ type TileSource = {
   url: string;
   attribution: string;
   maxZoom: number;
+  tileSize?: number;
+  zoomOffset?: number;
 };
 
 type BasemapOption = {
