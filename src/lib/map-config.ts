@@ -9,7 +9,7 @@ export const DEFAULT_CENTER: readonly [number, number] = [
 ];
 
 /** Initial zoom level. Higher means closer. */
-export const DEFAULT_ZOOM = 13;
+export const DEFAULT_ZOOM = 5;
 
 /** Zoom bounds so users do not get lost far away from the village. */
 export const MIN_ZOOM = 11;
