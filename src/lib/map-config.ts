@@ -1,40 +1,39 @@
-// map center on first load
+/*
+  Fixed values for the Banjaroyo map.
+  Kept in one file so they never end up as magic numbers inside components.
+*/
+
+/** Map center on first load, taken from the kalurahan office area. */
 export const DEFAULT_CENTER: readonly [number, number] = [
   -7.6596534, 110.2155825,
 ];
 
-// initial zoom level. higher means closer
-export const DEFAULT_ZOOM = 14;
+/** Initial zoom level. Higher means closer. */
+export const DEFAULT_ZOOM = 13;
 
-// zoom bounds so users dont get lost far away from village
+/** Zoom bounds so users do not get lost far away from the village. */
 export const MIN_ZOOM = 11;
 export const MAX_ZOOM = 19;
 
-// administrative names, shown in headings and attribution
+/** Administrative names, shown in headings and attribution. */
 export const VILLAGE_NAME = "Banjaroyo";
 export const DISTRICT_NAME = "Kalibawang";
 export const REGENCY_NAME = "Kulon Progo";
 
-// the two basemap modes the user can switch between
+/** The two basemap modes the user can switch between. */
 export type BasemapId = "street" | "satellite";
 
 type TileSource = {
   url: string;
   attribution: string;
   maxZoom: number;
-  tileSize?: number;
-  zoomOffset?: number;
+  highDensity?: boolean;
 };
 
 type BasemapOption = {
   id: BasemapId;
-  /** Shown on the switcher button, so Indonesian. */
   label: string;
   base: TileSource;
-  /**
-   * Optional transparent layer drawn on top of the base.
-   * Satellite imagery carries no place names, so labels come from here.
-   */
   labels?: TileSource;
 };
 
@@ -43,6 +42,7 @@ const OSM_TILE: TileSource = {
   attribution:
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   maxZoom: 19,
+  highDensity: false,
 };
 
 const ESRI_IMAGERY_TILE: TileSource = {
@@ -50,12 +50,14 @@ const ESRI_IMAGERY_TILE: TileSource = {
   attribution:
     "Tiles &copy; Esri, Maxar, Earthstar Geographics, and the GIS User Community",
   maxZoom: 19,
+  highDensity: true,
 };
 
 const ESRI_BOUNDARIES_TILE: TileSource = {
   url: "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
   attribution: "Labels &copy; Esri",
   maxZoom: 19,
+  highDensity: true,
 };
 
 export const BASEMAP_OPTIONS: readonly BasemapOption[] = [

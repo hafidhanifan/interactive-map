@@ -12,9 +12,12 @@ type BasemapLayerProps = {
  * Draws the tiles for the selected basemap, plus its label overlay when
  * the mode has one.
  *
- * The key props matter: they force React to drop the old tile layer and
- * build a new one on switch, instead of mutating the existing layer and
- * leaving stale tiles behind.
+ * detectRetina is set per source rather than globally. OpenStreetMap
+ * draws its standard tiles for one device pixel per CSS pixel and has
+ * no higher density version, so asking for a deeper zoom level there
+ * only quadruples the number of requests without adding detail. Esri
+ * imagery comes from high resolution photography, so the extra level
+ * genuinely shows more.
  */
 export function BasemapLayer({ basemap }: BasemapLayerProps) {
   const option =
@@ -31,7 +34,7 @@ export function BasemapLayer({ basemap }: BasemapLayerProps) {
         url={option.base.url}
         attribution={option.base.attribution}
         maxZoom={option.base.maxZoom}
-        detectRetina
+        detectRetina={option.base.highDensity ?? false}
       />
 
       {option.labels ? (
@@ -40,7 +43,7 @@ export function BasemapLayer({ basemap }: BasemapLayerProps) {
           url={option.labels.url}
           attribution={option.labels.attribution}
           maxZoom={option.labels.maxZoom}
-          detectRetina
+          detectRetina={option.labels.highDensity ?? false}
         />
       ) : null}
     </>
