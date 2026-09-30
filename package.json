@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "convert": "tsx scripts/convert.mts",
-    "photos:umkm": "tsx scripts/prepare-photos.mts"
+    "photos": "tsx scripts/prepare-photos.mts",
+    "data": "npm run convert && npm run photos"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
