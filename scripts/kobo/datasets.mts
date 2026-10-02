@@ -98,6 +98,32 @@ const KEBUN_COMMODITIES: Record<string, string> = {
   lainnya: OTHER,
 };
 
+/*
+  Facet tables differ from the display tables above in one way: the
+  "lainnya" choice keeps its own label instead of being replaced by what
+  the surveyor typed.
+
+  Filters need groups that are large and stable. Free text is neither:
+  every typed answer becomes its own chip holding a single point, and
+  the same answer typed in different letter cases splits into two. The
+  typed text is still published in the subtitle and stays searchable, so
+  nothing is lost by collapsing it here.
+*/
+const UMKM_FACET_CATEGORIES: Record<string, string> = {
+  ...UMKM_CATEGORIES,
+  lainnya: "Lainnya",
+};
+
+const FASUM_FACET_CATEGORIES: Record<string, string> = {
+  ...FASUM_CATEGORIES,
+  lainnya: "Lainnya",
+};
+
+const KEBUN_FACET_COMMODITIES: Record<string, string> = {
+  ...KEBUN_COMMODITIES,
+  lainnya: "Lainnya",
+};
+
 const DURIAN_TYPES: Record<string, string> = {
   unggulan: "Unggulan",
   biasa: "Biasa",
@@ -168,8 +194,7 @@ export const DATASETS: readonly DatasetConfig[] = [
       label: "Jenis usaha",
       column: "kategori",
       kind: "choice",
-      labels: UMKM_CATEGORIES,
-      otherColumn: "kategori_lain",
+      labels: UMKM_FACET_CATEGORIES,
     },
     phone: { column: "no_hp", consentColumn: "hp_tampil" },
     details: [
@@ -209,8 +234,7 @@ export const DATASETS: readonly DatasetConfig[] = [
       label: "Jenis",
       column: "kategori",
       kind: "choice",
-      labels: FASUM_CATEGORIES,
-      otherColumn: "kategori_lain",
+      labels: FASUM_FACET_CATEGORIES,
     },
     details: [
       {
@@ -240,8 +264,7 @@ export const DATASETS: readonly DatasetConfig[] = [
       label: "Komoditas",
       column: "komoditas",
       kind: "multi",
-      labels: KEBUN_COMMODITIES,
-      otherColumn: "komoditas_lain",
+      labels: KEBUN_FACET_COMMODITIES,
     },
     phone: { column: "no_hp", consentColumn: "hp_tampil" },
     details: [
