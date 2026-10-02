@@ -85,6 +85,7 @@ const FASUM_CATEGORIES: Record<string, string> = {
   pustu: "Puskesmas Pembantu",
   pasar: "Pasar",
   balai: "Balai",
+  balai_desa: "Balai Desa",
   jembatan: "Jembatan",
   lainnya: OTHER,
 };
@@ -120,6 +121,31 @@ const FISH: Record<string, string> = {
   gurame: "Gurame",
   lainnya: OTHER,
 };
+
+/**
+ * Range codes from the first version of the plantation and livestock
+ * forms, before the kalurahan asked for exact counts.
+ *
+ * Both spellings are listed because Excel reads "10_25" as the number
+ * 1025 and drops the underscore before the converter ever sees it.
+ */
+const LEGACY_RANGE_LABELS: Record<string, string> = {
+  lt10: "Kurang dari 10",
+  "10_25": "10 sampai 25",
+  "1025": "10 sampai 25",
+  "26_50": "26 sampai 50",
+  "2650": "26 sampai 50",
+  "51_100": "51 sampai 100",
+  "51100": "51 sampai 100",
+  gt100: "Lebih dari 100",
+};
+
+/** Flags a count the surveyor estimated rather than counted. */
+const ESTIMATE_PREFIX = {
+  column: "sumber_angka",
+  equals: "perkiraan",
+  prefix: "sekitar ",
+} as const;
 
 export const DATASETS: readonly DatasetConfig[] = [
   {
@@ -224,7 +250,22 @@ export const DATASETS: readonly DatasetConfig[] = [
         kind: "multi",
         labels: DURIAN_TYPES,
       },
-      { label: "Jumlah pohon", column: "jumlah_pohon" },
+      /*
+        The form switched from ranges to an exact count partway through
+        the survey, which renamed the column. Records from before the
+        change still carry the old one, so both are read here.
+      */
+      {
+        label: "Jumlah pohon",
+        column: "jumlah_pohon_angka",
+        suffix: " pohon",
+        fallback: {
+          column: "jumlah_pohon",
+          kind: "choice",
+          labels: LEGACY_RANGE_LABELS,
+        },
+        prefixWhen: ESTIMATE_PREFIX,
+      },
       { label: "Hasil panen", column: "hasil_panen" },
       {
         label: "Penjualan",
@@ -263,7 +304,17 @@ export const DATASETS: readonly DatasetConfig[] = [
         otherColumn: "komoditas_lain",
       },
       { label: "Ikan", column: "ikan", kind: "multi", labels: FISH },
-      { label: "Jumlah", column: "jumlah" },
+      {
+        label: "Jumlah",
+        column: "jumlah_angka",
+        suffix: " ekor",
+        fallback: {
+          column: "jumlah",
+          kind: "choice",
+          labels: LEGACY_RANGE_LABELS,
+        },
+        prefixWhen: ESTIMATE_PREFIX,
+      },
       {
         label: "Penjualan",
         column: "penjualan",
