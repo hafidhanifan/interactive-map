@@ -86,6 +86,7 @@ const FASUM_CATEGORIES: Record<string, string> = {
   pasar: "Pasar",
   balai: "Balai",
   balai_desa: "Balai Desa",
+  balai_padukuhan: "Balai Padukuhan",
   jembatan: "Jembatan",
   lainnya: OTHER,
 };
