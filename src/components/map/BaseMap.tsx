@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
@@ -20,10 +20,15 @@ import {
   MIN_ZOOM,
   type BasemapId,
 } from "@/lib/map-config";
-import type { MapPoint } from "@/types/dataset";
+import {
+  isLineFeature,
+  isPointFeature,
+  type MapFeature,
+} from "@/types/dataset";
 import { BasemapLayer } from "./BasemapLayer";
 import { BasemapSwitcher } from "./BasemapSwitcher";
 import { ClusterToggle } from "./ClusterToggle";
+import { LineLayer } from "./LineLayer";
 import { PointLayer } from "./PointLayer";
 
 /**
@@ -44,11 +49,21 @@ export function BaseMap() {
     remade against real survey data instead of synthetic copies.
   */
   const [clustered, setClustered] = useState(false);
-  const [selected, setSelected] = useState<MapPoint | null>(null);
+  const [selected, setSelected] = useState<MapFeature | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
 
   const datasets = useDatasets();
   const filter = usePointFilter(datasets.features, datasets.active);
+
+  // Points and road segments are drawn by different layers.
+  const points = useMemo(
+    () => filter.filtered.filter(isPointFeature),
+    [filter.filtered],
+  );
+  const lines = useMemo(
+    () => filter.filtered.filter(isLineFeature),
+    [filter.filtered],
+  );
 
   /*
     useCallback keeps this the same function between renders. Without it,
@@ -56,7 +71,7 @@ export function BaseMap() {
     dependency of the marker layer's effect, and every marker would be
     torn down and rebuilt on each click.
   */
-  const handleSelect = useCallback((feature: MapPoint) => {
+  const handleSelect = useCallback((feature: MapFeature) => {
     setSelected(feature);
   }, []);
 
@@ -96,9 +111,9 @@ export function BaseMap() {
         className="h-full w-full"
       >
         <BasemapLayer basemap={basemap} />
-
+        <LineLayer features={lines} onSelect={handleSelect} />
         <PointLayer
-          features={filter.filtered}
+          features={points}
           clustered={clustered}
           onSelect={handleSelect}
         />

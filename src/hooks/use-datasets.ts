@@ -4,24 +4,24 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { DEFAULT_ACTIVE_DATASETS, getDataset } from "@/lib/datasets";
 import type { FeatureCollection } from "@/types/geojson";
-import type { DatasetId, MapPoint } from "@/types/dataset";
+import type { DatasetId, MapFeature } from "@/types/dataset";
 
 type DatasetState =
   | { status: "loading" }
-  | { status: "ready"; features: readonly MapPoint[] }
+  | { status: "ready"; features: readonly MapFeature[] }
   | { status: "error"; message: string };
 
 export type DatasetsResult = {
   active: readonly DatasetId[];
   toggle: (id: DatasetId) => void;
   /** Points from every active dataset that has finished loading. */
-  features: readonly MapPoint[];
+  features: readonly MapFeature[];
   /** How many active datasets are still being fetched. */
   loadingCount: number;
   errors: readonly string[];
 };
 
-const EMPTY: readonly MapPoint[] = [];
+const EMPTY: readonly MapFeature[] = [];
 
 /*
   Lives outside the component, so it survives remounts and is shared by
@@ -29,9 +29,9 @@ const EMPTY: readonly MapPoint[] = [];
   this safe: a second caller awaits the same request instead of being
   turned away while the first one is still in flight.
 */
-const cache = new Map<DatasetId, Promise<readonly MapPoint[]>>();
+const cache = new Map<DatasetId, Promise<readonly MapFeature[]>>();
 
-function loadDataset(id: DatasetId): Promise<readonly MapPoint[]> {
+function loadDataset(id: DatasetId): Promise<readonly MapFeature[]> {
   const cached = cache.get(id);
   if (cached) return cached;
 
@@ -42,7 +42,8 @@ function loadDataset(id: DatasetId): Promise<readonly MapPoint[]> {
       if (!response.ok) {
         throw new Error(`Gagal memuat ${info.label} (${response.status})`);
       }
-      const collection = (await response.json()) as FeatureCollection<MapPoint>;
+      const collection =
+        (await response.json()) as FeatureCollection<MapFeature>;
       return collection.features;
     })
     .catch((error: unknown) => {
@@ -118,7 +119,7 @@ export function useDatasets(): DatasetsResult {
   }, []);
 
   const features = useMemo(() => {
-    const collected: MapPoint[] = [];
+    const collected: MapFeature[] = [];
     for (const id of active) {
       const state = states[id];
       if (state?.status === "ready") collected.push(...state.features);

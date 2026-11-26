@@ -6,6 +6,7 @@ import type { PointFilterResult } from "@/hooks/use-point-filter";
 import type { DatasetId } from "@/types/dataset";
 import { DatasetToggleGroup } from "./DatasetToggleGroup";
 import { FilterChipGroup } from "./FilterChipGroup";
+import { RoadLegend } from "./RoadLegend";
 import { SearchField } from "./SearchField";
 
 type FilterContentProps = {
@@ -53,6 +54,8 @@ export function FilterContent({
           onToggle={filter.toggleFacet}
         />
       ))}
+
+      {activeDatasets.includes("jalan") ? <RoadLegend /> : null}
 
       <FilterChipGroup
         title="Padukuhan"

@@ -30,9 +30,10 @@
   --category-livestock: #8a5a2a;
   --category-road: #4a525c;
 
-  /* road and bridge condition colors */
-  --condition-mantap: #2d8a3d;
-  --condition-rusak-ringan: #d18f12;
+  /* road condition colors, keyed to the codes the form records */
+  --condition-baik: #2d8a3d;
+  --condition-sedang: #d9b600;
+  --condition-rusak-ringan: #e8731a;
   --condition-rusak-berat: #bf392c;
 
   /* repeated layout values */

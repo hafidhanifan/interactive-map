@@ -3,7 +3,7 @@
 import { useCallback, useDeferredValue, useMemo, useState } from "react";
 
 import { getDataset } from "@/lib/datasets";
-import type { DatasetId, MapPoint } from "@/types/dataset";
+import type { DatasetId, MapFeature } from "@/types/dataset";
 
 export type FacetOption = {
   value: string;
@@ -29,7 +29,7 @@ export type PointFilterResult = {
   hasActiveFilter: boolean;
   facetGroups: readonly FacetGroup[];
   padukuhanOptions: readonly FacetOption[];
-  filtered: readonly MapPoint[];
+  filtered: readonly MapFeature[];
 };
 
 function toggleValue(
@@ -42,8 +42,8 @@ function toggleValue(
 }
 
 function countBy(
-  features: readonly MapPoint[],
-  pick: (point: MapPoint) => readonly string[],
+  features: readonly MapFeature[],
+  pick: (point: MapFeature) => readonly string[],
 ): Map<string, number> {
   const counts = new Map<string, number>();
   for (const feature of features) {
@@ -61,7 +61,7 @@ function countBy(
  * the numbers beside each option stay stable while the user is choosing.
  */
 export function usePointFilter(
-  features: readonly MapPoint[],
+  features: readonly MapFeature[],
   activeDatasets: readonly DatasetId[],
 ): PointFilterResult {
   const [query, setQuery] = useState("");

@@ -1,12 +1,12 @@
 "use client";
 
 import { getDataset } from "@/lib/datasets";
-import type { MapPoint } from "@/types/dataset";
+import type { MapFeature } from "@/types/dataset";
 import { DetailRow } from "./DetailRow";
 import { PhotoStrip } from "./PhotoStrip";
 
 type DetailContentProps = {
-  feature: MapPoint;
+  feature: MapFeature;
   onClose: () => void;
 };
 

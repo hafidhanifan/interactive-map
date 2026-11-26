@@ -58,6 +58,14 @@ export const DATASETS: readonly DatasetInfo[] = [
     facetTitle: null,
     file: "/data/jamban.geojson",
   },
+  {
+    id: "jalan",
+    label: "Kondisi Jalan",
+    shortLabel: "Jalan",
+    colorVariable: "--category-road",
+    facetTitle: "Kondisi",
+    file: "/data/jalan.geojson",
+  },
 ];
 
 export const DEFAULT_ACTIVE_DATASETS: readonly DatasetId[] = ["umkm"];

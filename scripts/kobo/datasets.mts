@@ -4,16 +4,31 @@ import type { FieldSpec } from "./field.mts";
 /** Marks a choice whose real text comes from a free text column. */
 const OTHER = "__other__";
 
+/** Where a feature's shape comes from. */
+export type GeometrySource =
+  | { kind: "point" }
+  | {
+      kind: "line";
+      /** Column holding the recorded trace. */
+      column: string;
+      /** Column holding a length typed by the surveyor, if the form has one. */
+      reportedLengthColumn?: string;
+    };
+
 export type DatasetConfig = {
   id: DatasetId;
   /** Also used as the point name where a dataset publishes no name. */
   label: string;
   folder: string;
   photoFields: readonly string[];
+  /** Defaults to one point read from the standard location columns. */
+  geometry?: GeometrySource;
   nameColumn?: string;
   ownerColumn?: string;
   /** False for datasets that must not publish RT and RW. */
   includeAddress: boolean;
+  /** Column whose code decides how a feature is drawn, such as condition. */
+  variant?: { column: string; labels: Record<string, string> };
   subtitle?: FieldSpec;
   facet?: FieldSpec;
   phone?: { column: string; consentColumn: string };
@@ -174,6 +189,36 @@ const ESTIMATE_PREFIX = {
   equals: "perkiraan",
   prefix: "sekitar ",
 } as const;
+
+/**
+ * Road condition as the form records it. The map colours each segment
+ * from the code, so these keys also have to match the colour variables
+ * added for roads.
+ */
+const ROAD_CONDITIONS: Record<string, string> = {
+  baik: "Baik",
+  sedang: "Sedang",
+  rusak_ringan: "Rusak ringan",
+  rusak_berat: "Rusak berat",
+};
+
+const ROAD_STATUS: Record<string, string> = {
+  lingkungan: "Jalan lingkungan",
+  desa: "Jalan desa",
+  kabupaten: "Jalan kabupaten",
+};
+
+const ROAD_SURFACES: Record<string, string> = {
+  cor: "Cor",
+  aspal: "Aspal",
+  paving: "Paving",
+  lainnya: OTHER,
+};
+
+const ROAD_ACCESS: Record<string, string> = {
+  mobil: "Mobil",
+  motor: "Motor",
+};
 
 export const DATASETS: readonly DatasetConfig[] = [
   {
@@ -371,5 +416,60 @@ export const DATASETS: readonly DatasetConfig[] = [
     photoFields: ["jamban", "lainnya"],
     includeAddress: false,
     details: [],
+  },
+  /*
+    Roads are the one category drawn as lines. Each submission is one
+    segment of a road, with its own condition, so every row becomes its
+    own line. Segments are not merged by road name: the names are typed
+    freely and do not match from one segment to the next.
+  */
+  {
+    id: "jalan",
+    label: "Kondisi Jalan",
+    folder: "jalan",
+    photoFields: ["jalan", "lainnya"],
+    nameColumn: "nama_ruas",
+    includeAddress: true,
+    geometry: {
+      kind: "line",
+      column: "jalur",
+      reportedLengthColumn: "panjang_m",
+    },
+    variant: { column: "kondisi", labels: ROAD_CONDITIONS },
+    subtitle: {
+      label: "Status",
+      column: "status_jalan",
+      kind: "choice",
+      labels: ROAD_STATUS,
+    },
+    facet: {
+      label: "Kondisi",
+      column: "kondisi",
+      kind: "choice",
+      labels: ROAD_CONDITIONS,
+    },
+    details: [
+      {
+        label: "Kondisi",
+        column: "kondisi",
+        kind: "choice",
+        labels: ROAD_CONDITIONS,
+      },
+      { label: "Bagian ke", column: "bagian_ke" },
+      {
+        label: "Permukaan",
+        column: "permukaan",
+        kind: "choice",
+        labels: ROAD_SURFACES,
+        otherColumn: "permukaan_lain",
+      },
+      {
+        label: "Dapat dilalui",
+        column: "dilalui",
+        kind: "choice",
+        labels: ROAD_ACCESS,
+      },
+      { label: "Keterangan", column: "keterangan" },
+    ],
   },
 ];

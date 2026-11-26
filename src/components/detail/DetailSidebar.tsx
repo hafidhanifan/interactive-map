@@ -1,10 +1,10 @@
 "use client";
 
-import type { MapPoint } from "@/types/dataset";
+import type { MapFeature } from "@/types/dataset";
 import { DetailContent } from "./DetailContent";
 
 type DetailSidebarProps = {
-  feature: MapPoint;
+  feature: MapFeature;
   onClose: () => void;
 };
 

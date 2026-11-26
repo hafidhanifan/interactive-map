@@ -1,4 +1,4 @@
-import type { PointFeature } from "./geojson";
+import type { LineFeature, PointFeature } from "./geojson";
 
 // the six categories currently published. roads and brigdes will join later. */
 export type DatasetId =
@@ -7,7 +7,8 @@ export type DatasetId =
   | "kebun"
   | "ternak"
   | "rtlh"
-  | "jamban";
+  | "jamban"
+  | "jalan";
 
 // one labelled line in the detail panel
 export type DetailItem = {
@@ -26,6 +27,19 @@ export type PointProperties = {
   readonly phone: string | null;
   readonly photos: readonly string[];
   readonly gpsPrecision: number | null;
+  readonly variant?: string | null;
 };
 
 export type MapPoint = PointFeature<PointProperties>;
+export type MapLine = LineFeature<PointProperties>;
+
+/** Anything the map can draw: a point or a road segment. */
+export type MapFeature = MapPoint | MapLine;
+
+export function isPointFeature(feature: MapFeature): feature is MapPoint {
+  return feature.geometry.type === "Point";
+}
+
+export function isLineFeature(feature: MapFeature): feature is MapLine {
+  return feature.geometry.type === "LineString";
+}
