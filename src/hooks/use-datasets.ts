@@ -7,14 +7,13 @@ import type { FeatureCollection } from "@/types/geojson";
 import type { DatasetId, MapFeature } from "@/types/dataset";
 
 type DatasetState =
-  | { status: "loading" }
   | { status: "ready"; features: readonly MapFeature[] }
   | { status: "error"; message: string };
 
 export type DatasetsResult = {
   active: readonly DatasetId[];
   toggle: (id: DatasetId) => void;
-  /** Points from every active dataset that has finished loading. */
+  /** Features from every active dataset that has finished loading. */
   features: readonly MapFeature[];
   /** How many active datasets are still being fetched. */
   loadingCount: number;
@@ -23,12 +22,6 @@ export type DatasetsResult = {
 
 const EMPTY: readonly MapFeature[] = [];
 
-/*
-  Lives outside the component, so it survives remounts and is shared by
-  every instance. Storing the promise rather than a flag is what makes
-  this safe: a second caller awaits the same request instead of being
-  turned away while the first one is still in flight.
-*/
 const cache = new Map<DatasetId, Promise<readonly MapFeature[]>>();
 
 function loadDataset(id: DatasetId): Promise<readonly MapFeature[]> {
@@ -56,41 +49,30 @@ function loadDataset(id: DatasetId): Promise<readonly MapFeature[]> {
   return request;
 }
 
-/**
- * Loads category files on demand and keeps what it has fetched.
- *
- * A file is only requested the first time its category is switched on,
- * which is what keeps the initial page light once every category holds
- * thousands of points. Switching a category off leaves the data in
- * memory, so turning it back on costs nothing.
- */
 export function useDatasets(): DatasetsResult {
   const [active, setActive] = useState<readonly DatasetId[]>(
     DEFAULT_ACTIVE_DATASETS,
   );
-  const [states, setStates] = useState<Record<string, DatasetState>>({});
+  const [states, setStates] = useState<
+    Partial<Record<DatasetId, DatasetState>>
+  >({});
 
   useEffect(() => {
-    /*
-      Only guards against writing state after this effect is torn down.
-      The request itself is never cancelled, because React runs effects
-      twice in development and cancelling would leave the second run
-      waiting on a request that had already been aborted.
-    */
     let live = true;
 
     for (const id of active) {
-      setStates((current) =>
-        current[id] ? current : { ...current, [id]: { status: "loading" } },
-      );
-
       void loadDataset(id)
         .then((features) => {
           if (!live) return;
-          setStates((current) => ({
-            ...current,
-            [id]: { status: "ready", features },
-          }));
+          setStates((current) => {
+            const known = current[id];
+            // Returning the same object tells React nothing changed, so
+            // toggling another category does not rebuild this one's markers.
+            if (known?.status === "ready" && known.features === features) {
+              return current;
+            }
+            return { ...current, [id]: { status: "ready", features } };
+          });
         })
         .catch((error: unknown) => {
           if (!live) return;
@@ -127,9 +109,7 @@ export function useDatasets(): DatasetsResult {
     return collected.length > 0 ? collected : EMPTY;
   }, [active, states]);
 
-  const loadingCount = active.filter(
-    (id) => states[id]?.status === "loading",
-  ).length;
+  const loadingCount = active.filter((id) => states[id] === undefined).length;
 
   const errors = active
     .map((id) => states[id])
