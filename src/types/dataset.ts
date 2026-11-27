@@ -1,6 +1,6 @@
 import type { LineFeature, PointFeature } from "./geojson";
 
-// the six categories currently published. roads and brigdes will join later. */
+// the 7 categories currently published. roads and brigdes will join later. */
 export type DatasetId =
   | "umkm"
   | "fasum"

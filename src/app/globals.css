@@ -104,7 +104,7 @@ body {
   text-align: center;
 }
 
-/* Widths here must match CLUSTER_SIZES in UmkmClusterLayer.tsx */
+/* CLUSTER_SIZES in PointLayer.tsx */
 .leaflet-marker-icon.map-cluster-small {
   width: 34px;
   height: 34px;
@@ -121,24 +121,6 @@ body {
   width: 52px;
   height: 52px;
   font-size: 14px;
-}
-
-/* Popup contents, built as an HTML string in popup-content.ts */
-.popup-body {
-  min-width: 160px;
-}
-
-.popup-title {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.popup-meta {
-  margin: 2px 0 0;
-  font-size: 12px;
-  color: var(--ink-muted);
 }
 
 /* Match Leaflet's own popup shell to the rest of the interface */

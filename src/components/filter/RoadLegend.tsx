@@ -1,11 +1,5 @@
 import { ROAD_CONDITIONS } from "@/lib/road-style";
 
-/**
- * Key to the road colours.
- *
- * Sits in the filter panel rather than floating over the map, so it
- * never collides with the detail panel or the sidebar on any screen.
- */
 export function RoadLegend() {
   return (
     <div>

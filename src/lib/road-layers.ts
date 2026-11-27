@@ -11,23 +11,8 @@ const LINE_WEIGHT = 5;
 /** The white edge that keeps a line readable over busy map imagery. */
 const CASING_WEIGHT = 9;
 
-/**
- * Width of the invisible line that catches taps.
- *
- * A 5 px line is hard to hit with a fingertip, so every road also gets
- * this much wider copy that draws nothing but still answers clicks.
- */
 const HIT_WEIGHT = 28;
 
-/**
- * Builds every road as three stacked canvas lines inside one group.
- *
- * Back to front they are: the invisible tap target, the white casing,
- * and the coloured line. Everything is bounced to the back of the shared
- * canvas afterwards, because a canvas paints in the order layers were
- * added. Without that, roads that arrive after the points would be drawn
- * on top of them and swallow their taps.
- */
 export function createRoadLayer(
   map: L.Map,
   lines: readonly MapLine[],

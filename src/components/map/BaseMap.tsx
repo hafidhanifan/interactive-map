@@ -31,23 +31,9 @@ import { ClusterToggle } from "./ClusterToggle";
 import { LineLayer } from "./LineLayer";
 import { PointLayer } from "./PointLayer";
 
-/**
- * The Leaflet map itself.
- *
- * This component must never be rendered on the server: Leaflet touches
- * window and document as soon as it is imported. MapLoader is responsible
- * for keeping it browser only.
- */
 export function BaseMap() {
   const [basemap, setBasemap] = useState<BasemapId>(DEFAULT_BASEMAP);
 
-  /*
-    clustering starts off. On a mid range phone, canvas rendering handled
-    thousands of points more smoothly than markercluster did, because the
-    plugin regroups every point on each zoom change and rebuilds its
-    bubbles as DOM nodes. The toggle stays for now so the call can be
-    remade against real survey data instead of synthetic copies.
-  */
   const [clustered, setClustered] = useState(false);
   const [selected, setSelected] = useState<MapFeature | null>(null);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -65,12 +51,6 @@ export function BaseMap() {
     [filter.filtered],
   );
 
-  /*
-    useCallback keeps this the same function between renders. Without it,
-    opening the panel would change the identity of onSelect, which is a
-    dependency of the marker layer's effect, and every marker would be
-    torn down and rebuilt on each click.
-  */
   const handleSelect = useCallback((feature: MapFeature) => {
     setSelected(feature);
   }, []);
@@ -134,11 +114,6 @@ export function BaseMap() {
         onClose={() => setFilterOpen(false)}
       />
 
-      {/*
-        Both detail panels are always rendered and one is hidden by CSS.
-        Choosing between them in JavaScript would mean measuring the
-        window, which flickers on the first paint.
-      */}
       {selected ? (
         <>
           <DetailSheet feature={selected} onClose={handleClose} />
